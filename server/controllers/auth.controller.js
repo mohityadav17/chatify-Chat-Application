@@ -54,11 +54,7 @@ const login = async (req, res) => {
             .json({message:"Please enter valid email and password"})
 
     }
-    if(password.length<6){
-        return res
-        .status(400)
-        .json({message:"Password must be at least 6 characters"})
-    }
+   
    const checkpassword = await bcrypt.compare(password,user.password)
    if(!checkpassword){
     return res.status(400)
