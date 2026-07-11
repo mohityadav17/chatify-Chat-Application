@@ -9,7 +9,7 @@ const signup = async (req, res) => {
             .status(400)
             .json({message:"All fields required"})
         }
-        const usercreatedornot=await User.findOne({$or:[{username}, {email}]})
+    const usercreatedornot=await User.findOne({$or:[{username}, {email}]})
         if(usercreatedornot){
             return res
             .status(409)
@@ -28,7 +28,7 @@ const signup = async (req, res) => {
     res.cookie("token",token,{
         httpOnly:true,
         maxAge:7*24*60*60*1000,
-        sameSite:"None",
+        sameSite:"Strict",
         secure:false
     })
     res.status(201)
@@ -65,7 +65,7 @@ const login = async (req, res) => {
     res.cookie("token",token,{
         httpOnly:true,
         maxAge:7*24*60*60*1000,
-        sameSite:"None",
+        sameSite:"Strict",
         secure:false
     })
     res.status(200)
