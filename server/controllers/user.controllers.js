@@ -26,7 +26,7 @@ export const editProfile = async(req,res)=>{
         let user = await User.findByIdAndUpdate(req.userId,{
             name,
             image
-        })
+        },{new:true})
         if(!user){
             return res.status(400)
             .json({message:"User not found"})
@@ -36,5 +36,17 @@ export const editProfile = async(req,res)=>{
     } catch (error) {
          return res.status(500)
     .json({message:`profile error ${error}`})
+    }
+}
+export const getOtherUsers= async(req,res)=>{
+    try {
+        let users = await User.find({
+            _id:{$ne:req.userId}
+        }).select("-password")
+        return res.status(200)
+        .json(users)
+    } catch (error) {
+         return res.status(500)
+    .json({message:`other user error ${error}`})
     }
 }

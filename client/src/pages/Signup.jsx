@@ -24,6 +24,7 @@ function Signup() {
         username,email,password
       },{withCredentials:true})
       dispatch(setUserData(result.data))
+      navigate("/profile")
       setemail("")
       setpassword("")
       setloading(false)

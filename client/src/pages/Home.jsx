@@ -1,9 +1,12 @@
 import React from 'react'
+import Sidebar from '../components/Sidebar'
+import MessageArea from '../components/MessageArea'
 
 function Home() {
   return (
-    <div>
-      Home Page
+    <div className='w-full h-screen flex'>
+      <Sidebar/>
+      <MessageArea/>
     </div>
   )
 }
