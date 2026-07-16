@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import dp from '../assets/dp.jpg'
 import { MdOutlineSearch } from "react-icons/md";
@@ -6,12 +6,13 @@ import { RxCross1 } from "react-icons/rx";
 import { IoMdLogOut } from "react-icons/io";
 import axios from 'axios';
 import { serverUrl } from '../main';
-import { setOtherUsers, setSelectedUser, setUserData,onlineUsers } from '../redux/userSlice';
+import { setOtherUsers, setSelectedUser, setUserData ,setOnlineUsers, setSearchData} from '../redux/userSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 function Sidebar() {
-    const {userData,otherUsers,selectedUser}=useSelector(state=>state.user)
+    const {userData,otherUsers,selectedUser,onlineUsers,searchData}=useSelector(state=>state.user)
     const[search,setsearch]=useState(false)
+    const[input,setInput]=useState("")
     let dispatch = useDispatch()
     const navigate= useNavigate()
     const handlelogout = async()=>{
@@ -25,39 +26,82 @@ function Sidebar() {
             
         }
     }
+    const handlesearch = async()=>{
+        try {
+            let result = await axios.get(`${serverUrl}/api/user/search?query=${input}`,{withCredentials:true})
+            dispatch(setSearchData(result.data))
+            
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+    useEffect(()=>{
+      if(input){
+        handlesearch()
+      }
+     
+    },[input])
   return (
-    <div className={`lg:w-[30%] w-full h-full lg:block ${!selectedUser?"block":"hidden"} bg-slate-200`}>
-        <div className='w-15 h-15 overflow-hidden rounded-full flex justify-center items-center bg-blue-400 shadow-gray-500 shadow-lg mt-2.5 cursor-pointer  bottom-4 fixed' onClick={handlelogout}>
+    <div className={`lg:w-[30%] w-full h-full lg:block relative ${!selectedUser?"block":"hidden"} bg-slate-200`}>
+        <div className='w-15 h-15 overflow-hidden rounded-full flex  items-center bg-blue-400 shadow-gray-500 shadow-lg mt-2.5 cursor-pointer  bottom-4 fixed' onClick={handlelogout}>
             <IoMdLogOut className='w-6 h-6' />
          </div>
+         {input.length>0&&
+         <div className='flex w-full h-75 top-65 z-150 items-center overflow-y-auto flex-col gap-2.5 pt-5 shadow-lg absolute bg-white'>
+                {searchData?.map((user)=>(
+                   <div className='w-[95%] h-17 flex justify-start items-center gap-5 px-2.5 bg-white hover:bg-blue-500 cursor-pointer border-b-2 border-gray-300 ' onClick={()=>{
+                    dispatch(setSelectedUser(user))
+                    setInput("")
+                    setsearch(false)
+                    }}>
+           <div className='relative  rounded-full  flex justify-center items-center  '>
+            <div className='w-15 h-15 overflow-hidden rounded-full flex justify-center items-center '>
+          <img src={user.image||dp} alt="" className='h-full w-full object-cover'/>
+         
+          </div>
+           {onlineUsers?.includes(user._id)&&
+           <span className='w-3 h-3 rounded-full bg-green-500 absolute bottom-1.25  -right-px '></span>}
+          </div>
+          <h1 className='text-gray-800 font-semibold text-7'>{user.name||user.username}</h1>
+          </div>
+                ))}
+              </div>}
       <div className='w-full h-60 bg-blue-400 rounded-b-[30%] shadow-gray-700 shadow-lg flex flex-col justify-center px-5'>
         
          <h1 className='text-white font-bold text-7'>
             Chatify
          </h1>
          <div className='w-full flex justify-between items-center'>
-            <h1 className='text-gray-800 font-semibold text-7'>Hii,{userData.name||"user"}</h1>
+            <h1 className='text-gray-800 font-semibold text-7'>Hii,{userData?.name||"user"}</h1>
              <div className='w-16 h-16 overflow-hidden rounded-full flex justify-center items-center shadow-gray-500 shadow-lg cursor-pointer' onClick={()=>navigate("/profile")}>
-          <img src={userData.image||dp} alt="" className='h-full w-full object-cover'/>
+          <img src={userData?.image||dp} alt="" className='h-full w-full object-cover'/>
           </div>
          
         </div>
-        <div className='w-full flex items-center gap-5'>
+        <div className='w-full flex items-center gap-5 overflow-y-auto py-4'>
             {!search&&  <div className='w-15 h-15 overflow-hidden rounded-full flex justify-center items-center bg-white shadow-gray-500 shadow-lg mt-2.5 cursor-pointer ' onClick={()=>setsearch(true)}>
             <MdOutlineSearch className='w-6 h-6'/>
           
           </div>}
           {search&& 
-          <form className='w-full h-16  bg-white shadow-gray-500 shadow-lg flex items-center gap-2.2 mt-2.5 rounded-full overflow-hidden px-5'>
+          <form className='w-full h-16  bg-white shadow-gray-500 shadow-lg flex items-center gap-2.2 mt-2.5 rounded-full overflow-hidden px-5 relative'>
             <MdOutlineSearch className='w-6 h-6'/>
-            <input type="text" placeholder='Search Users ...' className='w-full h-full p-2.5 outline-0 border-0 text-4'/>
+            <input type="text" placeholder='Search Users ...' className='w-full h-full p-2.5 outline-0 border-0 text-4'onChange={(e)=>setInput(e.target.value)} value={input}/>
             <RxCross1 className='w-6 h-6 cursor-pointer' onClick={()=>setsearch(false)} />
+              
           </form>
           }
         
     {!search&&otherUsers?.map((user)=>(
-            <div className='w-16 h-16 overflow-hidden rounded-full flex justify-center items-center shadow-gray-500 shadow-lg mt-2.5'>
+        onlineUsers?.includes(user._id)&&
+        <div className='relative  rounded-full shadow-gray-500 shadow-lg flex justify-center items-center mt-2.5 cursor-pointer'onClick={()=>dispatch(setSelectedUser(user))}>
+            <div className='w-15 h-15 overflow-hidden rounded-full flex justify-center items-center '>
           <img src={user.image||dp} alt="" className='h-full w-full object-cover'/>
+         
+          </div>
+           <span className='w-3 h-3 rounded-full bg-green-500 absolute bottom-1.25  -right-px shadow-gray-500 shadow-md'></span>
           </div>
           ))}
   
@@ -67,11 +111,16 @@ function Sidebar() {
       </div>
 
         </div >
-        <div className='w-full h-[60vh] overflow-auto flex flex-col gap-5 items-center mt-5'>
+        <div className='w-full h-[50%]  overflow-auto flex flex-col gap-5 items-center mt-5'>
           {otherUsers?.map((user)=>(
             <div className='w-[95%] h-17 flex justify-start items-center gap-5 shadow-gray-500 shadow-lg rounded-full bg-blue-200 hover:bg-blue-500 cursor-pointer' onClick={()=>dispatch(setSelectedUser(user))}>
-            <div className='w-16 h-16 overflow-hidden rounded-full flex justify-center items-center shadow-gray-500 bg-white shadow-lg '>
+           <div className='relative  rounded-full shadow-gray-500 shadow-lg flex justify-center items-center  '>
+            <div className='w-15 h-15 overflow-hidden rounded-full flex justify-center items-center '>
           <img src={user.image||dp} alt="" className='h-full w-full object-cover'/>
+         
+          </div>
+           {onlineUsers?.includes(user._id)&&
+           <span className='w-3 h-3 rounded-full bg-green-500 absolute bottom-1.25  -right-px shadow-gray-500 shadow-md'></span>}
           </div>
           <h1 className='text-gray-800 font-semibold text-7'>{user.name||user.username}</h1>
           </div>
