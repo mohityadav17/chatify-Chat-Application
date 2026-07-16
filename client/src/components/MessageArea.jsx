@@ -15,7 +15,7 @@ import { setMessages } from '../redux/messageSlice';
 
 
 function MessageArea() {
-  const{selectedUser,userData}=useSelector(state=>state.user)
+  const{selectedUser,userData,socket}=useSelector(state=>state.user)
   const dispatch=useDispatch()
   const[showPicker,setShowPicker]=useState(false)
   const[input,setInput]=useState("")
@@ -57,9 +57,22 @@ const messagesEndRef = useRef(null)
       setInput(prevInput=>prevInput+emojidata.emoji)
       setShowPicker(false)
   }
-   useEffect(()=>{
-    messagesEndRef.current?.scrollIntoView({behavior:"smooth"})
-  },[messages])
+  
+  useEffect(()=>{
+     socket.on("newMessage",(mess)=>{
+      dispatch(setMessages([...messages,mess]))
+     })
+     return ()=>socket.off("newMessage")
+  },[messages,setMessages])
+const scrollToBottom = () => {
+  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+}
+const messagesContainerRef = useRef(null)
+useEffect(() => {
+  scrollToBottom()
+}, [messages])
+
+
   
   return (
     <div className={`lg:w-[70%] relative ${selectedUser?"flex":"hidden"} lg:block h-full w-full bg-slate-400 border-l-2 border-gray-300`}>
@@ -75,7 +88,8 @@ const messagesEndRef = useRef(null)
         <h1 className='text-white font-semibold text-7'>{selectedUser?.name||"User"}</h1>
 
       </div>
-      <div className='w-full h-150 flex flex-col gap-3 py-8 px-5 pb-24 overflow-auto'>
+      <div ref={messagesContainerRef}
+  onLoadCapture={scrollToBottom} className='w-full h-150 flex flex-col gap-3 py-8 px-5 pb-24 overflow-auto'>
         {showPicker&&  <div className='absolute bottom-30 left-5 z-50'><EmojiPicker width={250} height={350} className='shadow-lg' onEmojiClick={onEmojiClick} /></div>}
       {messages&&messages.map((mess)=>(
         mess.sender===userData._id?<SenderMessage image={mess.image} message={mess.message}/>:<ReceiverMessage image={mess.image} message={mess.message}/>

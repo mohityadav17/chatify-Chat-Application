@@ -6,7 +6,7 @@ import { RxCross1 } from "react-icons/rx";
 import { IoMdLogOut } from "react-icons/io";
 import axios from 'axios';
 import { serverUrl } from '../main';
-import { setOtherUsers, setSelectedUser, setUserData } from '../redux/userSlice';
+import { setOtherUsers, setSelectedUser, setUserData,onlineUsers } from '../redux/userSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 function Sidebar() {
