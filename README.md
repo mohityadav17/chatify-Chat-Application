@@ -16,6 +16,11 @@ Chatify is a real-time chat application built using the **MERN Stack** (MongoDB,
 - ⚡ Fast and scalable architecture
 
 ---
+## 🚀 Live Demo
+
+🌐 **Try Chatify:** https://chatify-chat-application-client.onrender.com
+
+---
 
 ## 🛠️ Tech Stack
 
