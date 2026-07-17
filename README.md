@@ -74,16 +74,22 @@ Chatify/
 ## 📸 Screenshots
 
 > Add screenshots of your application here.
+## 📸 Screenshots
 
-| Login | Chat |
-|-------|------|
-| ![Login]( | ![Chat](Screenshot(156).png) |
-| ![UI]( | ![Chat](Screenshot(157).png)|
-| ![SignUp]( | ![Chat](Screenshots(158).png)|
-| ![Chat]( | ![Chat](Screenshots(159).png)|
-| ![Profile]( | ![Chat](Screenshots(160).png)|
+### Login
+![Login](./Screenshot%20(156).png)
 
+### Signup
+![Theme](./Screenshot%20(157).png)
 
+### Chat
+![SignUp](./Screenshot%20(158).png)
+
+### Theme
+![Chat](./Screenshot%20(159).png)
+
+### Profile
+![Profile](./Screenshot%20(160).png)
 
 ---
 
