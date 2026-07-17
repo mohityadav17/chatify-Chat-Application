@@ -77,7 +77,13 @@ Chatify/
 
 | Login | Chat |
 |-------|------|
-| ![Login]( | ![Chat](screenshots/chat.png) |
+| ![Login]( | ![Chat](Screenshot(156).png) |
+| ![UI]( | ![Chat](Screenshot(157).png)|
+| ![SignUp]( | ![Chat](Screenshots(158).png)|
+| ![Chat]( | ![Chat](Screenshots(159).png)|
+| ![Profile]( | ![Chat](Screenshots(160).png)|
+
+
 
 ---
 
